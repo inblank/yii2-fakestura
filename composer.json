@@ -1,0 +1,32 @@
+{
+    "name": "inblank/yii2-fakestura",
+    "type": "yii2-extension",
+    "description": "Yii2 inblank/fakestura",
+    "keywords": [
+        "yii2",
+        "fakestura"
+    ],
+    "homepage": "https://github.com/inblank/yii2-fakestura",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pavel Aleksandrov",
+            "email": "inblank@yandex.ru",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.0"
+    },
+    "require-dev": {
+        "codeception/codeception": "^2.1",
+        "codeception/specify": "~0.4",
+        "codeception/verify": "~0.3",
+        "yiisoft/yii2-codeception": "~2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "inblank\\fakestura\\": "src"
+        }
+    }
+}
