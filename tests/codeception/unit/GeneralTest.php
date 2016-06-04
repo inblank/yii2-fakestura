@@ -183,6 +183,36 @@ class GeneralTest extends TestCase
 
     }
 
+    public function testAddress()
+    {
+        $this->specify("we have generate address", function () {
+            $fake = new Fakestura();
+            $address = $fake->address();
+
+            expect("we can generate address", $address)->internalType('array');
+            expect("we must see `country` field", $address)->hasKey('country');
+            expect("we must see `postcode` field", $address)->hasKey('postcode');
+            expect("we must see `city` field", $address)->hasKey('city');
+            expect("we must see `street` field", $address)->hasKey('street');
+            expect("we must see `region` field", $address)->hasKey('region');
+            expect("we must see `number` field", $address)->hasKey('number');
+        });
+
+        $this->specify("we have generate address string", function () {
+            $fake = new Fakestura();
+            $address = $fake->addressString();
+            expect("we can generate random address string", $address)->notEmpty();
+            expect("we can generate another random address string", $fake->addressString())->notEquals($address);
+
+            $address = $fake->address();
+            $address2 = $fake->addressString([
+                'tpl' => '{country}{city}{street}',
+                'data' => $address,
+            ]);
+            expect("we can generate another random address string", $address2)->equals($address['country'] . ' ' . $address['city'] . ' ' . $address['street']);
+        });
+    }
+
     protected function tearDown()
     {
         parent::tearDown();

@@ -419,4 +419,54 @@ class Fakestura extends Component
         self::$emailCache[$email] = true;
         return $email;
     }
+
+    /**
+     * Generate address array
+     * @return array
+     */
+    public function address()
+    {
+        $cities = self::loadFromFile($this->language . '/address/cities');
+        $country = array_shift($cities);
+        $streets = self::loadFromFile($this->language . '/address/streets');
+        $data = explode('/', $cities[rand(0, count($cities) - 1)]);
+        return [
+            'country' => $country,
+            'postcode'=>$data[0],
+            'region'=>count($data)==3 ? $data[1] : '',
+            'city' =>count($data)==3 ? $data[2] : $data[1],
+            'street'=>$streets[rand(0, count($streets)-1)],
+            'number'=>rand(9,199),
+        ];
+    }
+
+    /**
+     * Generate address
+     * @param array $config
+     *  'tplName' - name of template from template config for use to generate. Default: 'address'
+     *  'tpl' - template for use to generate. Priority over 'tplName'. Default: null
+     *  'data' - data for generate address string. If not set will be use Fakestura::address()
+     * @return string
+     */
+    public function addressString($config = [])
+    {
+        // build data array
+        $config = array_merge([
+            'tplName' => 'address',
+            'tpl' => null,
+            'data' => null,
+        ], (array)$config);
+
+        if (empty($config['data'])) {
+            $config['data'] = $this->address();
+        }
+        if (empty($config['tpl'])) {
+            if (!array_key_exists($config['tplName'], self::$globalTemplates)) {
+                // not fond template
+                return null;
+            }
+            $config['tpl'] = self::$globalTemplates[$config['tplName']];
+        }
+        return self::parseTemplate($config['tpl'], $config['data']);
+    }
 }

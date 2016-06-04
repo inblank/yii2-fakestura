@@ -8,7 +8,7 @@ return [
 
     'team'=>'"{?adjective}{noun}"',
 
-    'address'=>'{city}{street} {##}',
+    'address'=>'{postcode}{country}{city}{street}{number}',
 
     'login'=>'{login}',
 
