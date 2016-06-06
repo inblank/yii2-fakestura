@@ -49,7 +49,12 @@ class Fakestura extends Component
      * @var string
      */
     protected $language;
-
+    /**
+     * List of avatars for generate.
+     * Take avatars from https://randomuser.me
+     * @var array
+     */
+    protected $avatarList = ['male'=>[], 'female'=>[]];
     /**
      * Get global templates
      * @return array|mixed
@@ -206,10 +211,12 @@ class Fakestura extends Component
             $result[] = [
                 'id' => $i,
                 'name' => $person['name'],
+                'avatar'=> $person['avatar'],
                 'gender' => $person['gender'],
                 'birth' => $person['birth'],
                 'login' => $login,
                 'email' => $email,
+                'address' => $person['address'],
             ];
         }
         return $result;
@@ -258,8 +265,10 @@ class Fakestura extends Component
             $config['gender'] = $genderList[rand(0, 1)];
         }
         return [
+            'avatar' => $this->avatar($config['gender']),
             'name' => self::parseTemplate($config['tpl'], self::$data['person'][$config['gender']]),
             'gender' => $config['gender'],
+            'address'=>$this->address(),
             'birth' => $this->birth([
                 'format' => $config['birth'],
             ]),
@@ -468,5 +477,26 @@ class Fakestura extends Component
             $config['tpl'] = self::$globalTemplates[$config['tplName']];
         }
         return self::parseTemplate($config['tpl'], $config['data']);
+    }
+
+    /**
+     * Generate random avatar
+     * Take avatars from https://randomuser.me
+     * @param string $gender avatar gender. male or female
+     * @return string
+     */
+    public function avatar($gender=null){
+        if($gender===null){
+            $gender = ['men', 'women'][rand(0,1)];
+        }elseif(in_array($gender, ['men', 'male'])){
+            $gender = 'men';
+        }else{
+            $gender = 'women';
+        }
+        if(empty($this->avatarList[$gender])){
+            $this->avatarList[$gender] = range(0, 99);
+            shuffle($this->avatarList[$gender]);
+        }
+        return 'https://randomuser.me/api/portraits/'.$gender.'/'.array_pop($this->avatarList[$gender]).'.jpg';
     }
 }
